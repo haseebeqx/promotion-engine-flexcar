@@ -31,12 +31,21 @@ A comprehensive Ruby-based inventory and promotions engine for e-commerce platfo
 - Automatic calculation of best prices with promotions
 - Real-time promotion application
 
+## Requirements
+
+- Ruby 3.0 or higher
+- Bundler gem
+
 ## Installation
 
 1. Clone the repository
 2. Install dependencies:
    ```bash
    bundle install
+   ```
+3. Verify installation by running tests:
+   ```bash
+   bundle exec rspec
    ```
 
 ## Usage
@@ -166,20 +175,35 @@ cart.remove_item(1) # Remove all iPhones
 cart.clear
 ```
 
-## Running Tests
+## Project Structure
 
-Run the complete test suite:
-
-```bash
-bundle exec rspec
 ```
+lib/
+├── promotion_system.rb      # Main entry point
+├── cart.rb                  # Shopping cart implementation
+├── cart_item.rb            # Individual cart item with promotions
+├── item.rb                 # Product/item definition
+├── category.rb             # Item categorization
+├── brand.rb                # Brand management
+├── promotion.rb            # Base promotion class
+├── promotion_engine.rb     # Promotion logic and optimization
+└── promotions/             # Specific promotion types
+    ├── flat_discount.rb
+    ├── percentage_discount.rb
+    ├── buy_x_get_y.rb
+    └── weight_threshold.rb
 
-Run specific test files:
-
-```bash
-bundle exec rspec spec/cart_spec.rb
-bundle exec rspec spec/promotions_spec.rb
-bundle exec rspec spec/promotion_system_spec.rb
+spec/                       # Test files
+├── promotion_system_spec.rb
+├── promotion_engine_spec.rb
+├── item_spec.rb
+├── brand_spec.rb
+├── promotions_spec.rb
+└── promotions/            # Promotion-specific tests
+    ├── flat_discount_spec.rb
+    ├── percentage_discount_spec.rb
+    ├── buy_x_get_y_spec.rb
+    └── weight_threshold_spec.rb
 ```
 
 ## Architecture
@@ -205,9 +229,18 @@ bundle exec rspec spec/promotion_system_spec.rb
 ## Additional Examples
 
 For more comprehensive examples and test cases, see the test files in the `spec/` directory, particularly:
-- `spec/promotion_system_spec.rb` - Integration examples
-- `spec/multi_category_promotion_spec.rb` - Multi-category item examples
-- `spec/promotion_engine_comprehensive_spec.rb` - Complex promotion scenarios
+- `spec/promotion_system_spec.rb` - Integration examples and cart functionality
+- `spec/promotion_engine_spec.rb` - Complex promotion scenarios and optimization logic
+- `spec/promotions/` - Individual promotion type tests with detailed scenarios
+
+### Adding New Promotion Types
+
+To add a new promotion type:
+
+1. Create a new class in `lib/promotions/` that inherits from `Promotion`
+2. Implement the required methods: `calculate_discount` and `can_apply_to?`
+3. Add the promotion to `PromotionSystem` with a factory method
+4. Create comprehensive tests in `spec/promotions/`
 
 ## License
 
