@@ -1,0 +1,83 @@
+<div id="items-tab" class="tab-content">
+  <div class="admin-section">
+    <div class="form-card">
+      <h4>Add New Item</h4>
+      <form action="/items" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="item_id">Item ID:</label>
+            <input type="number" id="item_id" name="id" required>
+          </div>
+          <div class="form-group">
+            <label for="item_name">Item Name:</label>
+            <input type="text" id="item_name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="item_price">Price ($):</label>
+            <input type="number" id="item_price" name="price" step="0.01" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sale_type">Sale Type:</label>
+            <select id="sale_type" name="sale_type" required>
+              <option value="quantity">Quantity</option>
+              <option value="weight">Weight</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="item_brand_id">Brand (optional):</label>
+            <select id="item_brand_id" name="brand_id">
+              <option value="">None</option>
+              <% @brands.each do |brand| %>
+                <option value="<%= brand.id %>"><%= brand.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Categories:</label>
+          <% if @categories.empty? %>
+            <p style="color: #e74c3c;">No categories available. Please create categories first.</p>
+          <% else %>
+            <div class="checkbox-group">
+              <% @categories.each do |category| %>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="item_cat_<%= category.id %>" name="category_ids[]" value="<%= category.id %>">
+                  <label for="item_cat_<%= category.id %>"><%= category.name %></label>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <button type="submit">Create Item</button>
+      </form>
+    </div>
+    
+    <div class="data-table">
+      <h4>Existing Items</h4>
+      <% if @items.empty? %>
+        <div class="empty-state">No items yet. Create one above!</div>
+      <% else %>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Price</th><th>Sale Type</th><th>Categories</th><th>Brand</th></tr>
+          </thead>
+          <tbody>
+            <% @items.each do |item| %>
+              <tr>
+                <td><%= item.id %></td>
+                <td><%= item.name %></td>
+                <td>$<%= format_price(item.price) %></td>
+                <td><span class="badge badge-<%= item.sale_type == :quantity ? 'primary' : 'info' %>"><%= item.sale_type %></span></td>
+                <td><%= item.categories.map(&:name).join(', ') %></td>
+                <td><%= item.brand&.name || 'N/A' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+

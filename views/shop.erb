@@ -1,0 +1,280 @@
+<div class="shopping-interface">
+  <div class="shop-header">
+    <h2>Shopping Interface</h2>
+    <p>Add items to your cart and see real-time discount calculations</p>
+  </div>
+
+  <div class="shop-layout">
+    <!-- Left Panel: Item Selection -->
+    <div class="item-selection-panel">
+      <div class="panel-header">
+        <h3>Available Items</h3>
+      </div>
+      
+      <% if @items.empty? %>
+        <div class="empty-state">
+          <p>No items available. Please add items in the Admin Dashboard first.</p>
+          <a href="/admin" class="btn btn-primary">Go to Admin Dashboard</a>
+        </div>
+      <% else %>
+        <div class="items-grid">
+          <% @items.each do |item| %>
+            <div class="item-card" data-item-id="<%= item.id %>">
+              <div class="item-info">
+                <h4><%= item.name %></h4>
+                <p class="item-price">$<%= format_price(item.price) %></p>
+                <p class="item-details">
+                  <span class="badge badge-<%= item.sale_type == :quantity ? 'primary' : 'info' %>">
+                    <%= item.sale_type %>
+                  </span>
+                  <% if item.brand %>
+                    <span class="item-brand"><%= item.brand.name %></span>
+                  <% end %>
+                </p>
+                <% unless item.categories.empty? %>
+                  <p class="item-categories">
+                    <% item.categories.each do |category| %>
+                      <span class="category-tag"><%= category.name %></span>
+                    <% end %>
+                  </p>
+                <% end %>
+              </div>
+              
+              <div class="item-actions">
+                <form class="add-to-cart-form" data-item-id="<%= item.id %>">
+                  <div class="amount-input">
+                    <label for="amount_<%= item.id %>">
+                      <%= item.sale_type == :quantity ? 'Quantity:' : 'Weight (kg):' %>
+                    </label>
+                    <input type="number" 
+                           id="amount_<%= item.id %>" 
+                           name="amount" 
+                           step="<%= item.sale_type == :quantity ? '1' : '0.01' %>" 
+                           min="<%= item.sale_type == :quantity ? '1' : '0.01' %>" 
+                           value="<%= item.sale_type == :quantity ? '1' : '0.1' %>" 
+                           required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right Panel: Shopping Cart -->
+    <div class="cart-panel">
+      <div class="panel-header">
+        <h3>Shopping Cart</h3>
+        <button id="clear-cart-btn" class="btn btn-danger btn-small">Clear Cart</button>
+      </div>
+      
+      <div id="cart-contents">
+        <% if @cart.items.empty? %>
+          <div class="empty-cart">
+            <p>Your cart is empty</p>
+            <p class="empty-cart-hint">Add items from the left panel to get started</p>
+          </div>
+        <% else %>
+          <div class="cart-items">
+            <% @cart.items.each do |cart_item| %>
+              <div class="cart-item" data-item-id="<%= cart_item.item.id %>">
+                <div class="cart-item-info">
+                  <h4><%= cart_item.item.name %></h4>
+                  <p class="cart-item-amount">
+                    <%= cart_item.amount %> 
+                    <%= cart_item.item.sale_type == :quantity ? 'units' : 'kg' %>
+                  </p>
+                </div>
+                <div class="cart-item-pricing">
+                  <% if cart_item.applied_promotion %>
+                    <p class="original-price">$<%= format_price(cart_item.original_price) %></p>
+                    <p class="discounted-price">$<%= format_price(cart_item.discounted_price) %></p>
+                    <p class="promotion-name"><%= cart_item.applied_promotion.name %></p>
+                  <% else %>
+                    <p class="item-price">$<%= format_price(cart_item.original_price) %></p>
+                  <% end %>
+                </div>
+                <button class="remove-item-btn" data-item-id="<%= cart_item.item.id %>">×</button>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Original Total:</span>
+          <span id="original-total">$<%= format_price(@cart.total_original_price) %></span>
+        </div>
+        <div class="summary-row discount-row">
+          <span>Total Savings:</span>
+          <span id="total-savings">$<%= format_price(@cart.total_savings) %></span>
+        </div>
+        <div class="summary-row total-row">
+          <span>Final Total:</span>
+          <span id="final-total">$<%= format_price(@cart.total_discounted_price) %></span>
+        </div>
+        
+        <% if @cart.total_savings > 0 %>
+          <div class="savings-highlight">
+            You're saving $<%= format_price(@cart.total_savings) %>!
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Real-time cart updates
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle add to cart forms
+  document.querySelectorAll('.add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const itemId = this.dataset.itemId;
+      const amount = this.querySelector('input[name="amount"]').value;
+      
+      addToCart(itemId, amount);
+    });
+  });
+  
+  // Handle remove item buttons
+  document.querySelectorAll('.remove-item-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const itemId = this.dataset.itemId;
+      removeFromCart(itemId);
+    });
+  });
+  
+  // Handle clear cart button
+  document.getElementById('clear-cart-btn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to clear your cart?')) {
+      clearCart();
+    }
+  });
+});
+
+async function addToCart(itemId, amount) {
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `item_id=${itemId}&amount=${amount}`
+    });
+    
+    if (response.ok) {
+      await updateCartDisplay();
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+  }
+}
+
+async function removeFromCart(itemId) {
+  try {
+    const response = await fetch(`/cart/remove/${itemId}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      await updateCartDisplay();
+    }
+  } catch (error) {
+    console.error('Error removing from cart:', error);
+  }
+}
+
+async function clearCart() {
+  try {
+    const response = await fetch('/cart/clear', {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      await updateCartDisplay();
+    }
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+  }
+}
+
+async function updateCartDisplay() {
+  try {
+    const response = await fetch('/api/cart/summary');
+    const cartData = await response.json();
+    
+    // Update cart contents
+    const cartContents = document.getElementById('cart-contents');
+    if (cartData.items.length === 0) {
+      cartContents.innerHTML = `
+        <div class="empty-cart">
+          <p>Your cart is empty</p>
+          <p class="empty-cart-hint">Add items from the left panel to get started</p>
+        </div>
+      `;
+    } else {
+      cartContents.innerHTML = `
+        <div class="cart-items">
+          ${cartData.items.map(item => `
+            <div class="cart-item" data-item-id="${item.id}">
+              <div class="cart-item-info">
+                <h4>${item.name}</h4>
+                <p class="cart-item-amount">${item.amount} ${item.sale_type === 'quantity' ? 'units' : 'kg'}</p>
+              </div>
+              <div class="cart-item-pricing">
+                ${item.promotion ? `
+                  <p class="original-price">$${item.original_price.toFixed(2)}</p>
+                  <p class="discounted-price">$${item.discounted_price.toFixed(2)}</p>
+                  <p class="promotion-name">${item.promotion}</p>
+                ` : `
+                  <p class="item-price">$${item.original_price.toFixed(2)}</p>
+                `}
+              </div>
+              <button class="remove-item-btn" data-item-id="${item.id}">×</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      // Re-attach event listeners for remove buttons
+      document.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const itemId = this.dataset.itemId;
+          removeFromCart(itemId);
+        });
+      });
+    }
+    
+    // Update summary
+    document.getElementById('original-total').textContent = `$${cartData.total_original_price.toFixed(2)}`;
+    document.getElementById('total-savings').textContent = `$${cartData.total_savings.toFixed(2)}`;
+    document.getElementById('final-total').textContent = `$${cartData.total_discounted_price.toFixed(2)}`;
+    
+    // Show/hide savings highlight
+    const savingsHighlight = document.querySelector('.savings-highlight');
+    if (cartData.total_savings > 0) {
+      if (!savingsHighlight) {
+        const summaryDiv = document.querySelector('.cart-summary');
+        summaryDiv.insertAdjacentHTML('beforeend', `
+          <div class="savings-highlight">
+            You're saving $${cartData.total_savings.toFixed(2)}!
+          </div>
+        `);
+      } else {
+        savingsHighlight.innerHTML = `You're saving $${cartData.total_savings.toFixed(2)}!`;
+      }
+    } else if (savingsHighlight) {
+      savingsHighlight.remove();
+    }
+    
+  } catch (error) {
+    console.error('Error updating cart display:', error);
+  }
+}
+</script>

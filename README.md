@@ -50,6 +50,29 @@ A comprehensive Ruby-based inventory and promotions engine for e-commerce platfo
 
 ## Usage
 
+### Web UI (Recommended for Testing)
+
+The easiest way to test the promotion system is through the web interface:
+
+1. Start the server:
+   ```bash
+   bundle exec rakeup
+   ```
+
+2. Open your browser and navigate to the local server (typically `http://localhost:9292`)
+
+3. Use the web interface to:
+   - Create categories, brands, and items
+   - Set up various promotion types
+   - Add items to cart and see promotions applied in real-time
+   - Test different scenarios interactively
+
+### Console
+
+```
+bundle exec pry
+```
+
 ### Basic Setup
 
 ```ruby

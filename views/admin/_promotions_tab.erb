@@ -1,0 +1,237 @@
+<div id="promotions-tab" class="tab-content">
+  <div class="admin-section">
+    <div class="alert alert-info">
+      <strong>Note:</strong> Target IDs should be comma-separated (e.g., "1,2,3").
+      Choose target type as "item" or "category" and provide corresponding IDs.
+    </div>
+
+    <div class="promotion-forms-grid">
+      <!-- Flat Discount -->
+      <div class="form-card">
+        <h4>Flat Fee Discount</h4>
+        <form action="/promotions/flat_discount" method="POST">
+          <div class="form-group">
+            <label>ID:</label>
+            <input type="number" name="id" required>
+          </div>
+          <div class="form-group">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="form-group">
+            <label>Discount Amount ($):</label>
+            <input type="number" name="discount_amount" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label>Target Type:</label>
+            <select name="target_type" required>
+              <option value="item">Item</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target IDs (comma-separated):</label>
+            <input type="text" name="target_ids" required>
+          </div>
+          <div class="form-group">
+            <label>Start Time:</label>
+            <input type="datetime-local" name="start_time" required>
+          </div>
+          <div class="form-group">
+            <label>End Time (optional):</label>
+            <input type="datetime-local" name="end_time">
+          </div>
+          <button type="submit">Create Flat Discount</button>
+        </form>
+      </div>
+
+      <!-- Percentage Discount -->
+      <div class="form-card">
+        <h4>Percentage Discount</h4>
+        <form action="/promotions/percentage_discount" method="POST">
+          <div class="form-group">
+            <label>ID:</label>
+            <input type="number" name="id" required>
+          </div>
+          <div class="form-group">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="form-group">
+            <label>Discount Percentage (%):</label>
+            <input type="number" name="discount_percentage" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label>Target Type:</label>
+            <select name="target_type" required>
+              <option value="item">Item</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target IDs (comma-separated):</label>
+            <input type="text" name="target_ids" required>
+          </div>
+          <div class="form-group">
+            <label>Start Time:</label>
+            <input type="datetime-local" name="start_time" required>
+          </div>
+          <div class="form-group">
+            <label>End Time (optional):</label>
+            <input type="datetime-local" name="end_time">
+          </div>
+          <button type="submit">Create Percentage Discount</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="promotion-forms-grid">
+      <!-- Buy X Get Y -->
+      <div class="form-card">
+        <h4>Buy X Get Y</h4>
+        <form action="/promotions/buy_x_get_y" method="POST">
+          <div class="form-group">
+            <label>ID:</label>
+            <input type="number" name="id" required>
+          </div>
+          <div class="form-group">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="form-group">
+            <label>Buy Quantity:</label>
+            <input type="number" name="buy_quantity" required>
+          </div>
+          <div class="form-group">
+            <label>Get Quantity:</label>
+            <input type="number" name="get_quantity" required>
+          </div>
+          <div class="form-group">
+            <label>Get Discount (%):</label>
+            <input type="number" name="get_discount_percentage" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label>Target Type:</label>
+            <select name="target_type" required>
+              <option value="item">Item</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target IDs (comma-separated):</label>
+            <input type="text" name="target_ids" required>
+          </div>
+          <div class="form-group">
+            <label>Start Time:</label>
+            <input type="datetime-local" name="start_time" required>
+          </div>
+          <div class="form-group">
+            <label>End Time (optional):</label>
+            <input type="datetime-local" name="end_time">
+          </div>
+          <button type="submit">Create Buy X Get Y</button>
+        </form>
+      </div>
+
+      <!-- Weight Threshold -->
+      <div class="form-card">
+        <h4>Weight Threshold</h4>
+        <form action="/promotions/weight_threshold" method="POST">
+          <div class="form-group">
+            <label>ID:</label>
+            <input type="number" name="id" required>
+          </div>
+          <div class="form-group">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="form-group">
+            <label>Threshold Weight (kg):</label>
+            <input type="number" name="threshold_weight" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label>Discount Percentage (%):</label>
+            <input type="number" name="discount_percentage" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label>Target Type:</label>
+            <select name="target_type" required>
+              <option value="item">Item</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target IDs (comma-separated):</label>
+            <input type="text" name="target_ids" required>
+          </div>
+          <div class="form-group">
+            <label>Start Time:</label>
+            <input type="datetime-local" name="start_time" required>
+          </div>
+          <div class="form-group">
+            <label>End Time (optional):</label>
+            <input type="datetime-local" name="end_time">
+          </div>
+          <button type="submit">Create Weight Threshold</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="data-table">
+      <h4>Active Promotions</h4>
+      <% if @promotions.empty? %>
+        <div class="empty-state">No active promotions. Create one above!</div>
+      <% else %>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Type</th><th>Details</th><th>Target</th><th>Start Time</th><th>End Time</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <% @promotions.each do |promotion| %>
+              <tr>
+                <td><%= promotion.id %></td>
+                <td><%= promotion.name %></td>
+                <td><span class="badge badge-success"><%= promotion.class.name.split('::').last %></span></td>
+                <td>
+                  <% if promotion.is_a?(FlatDiscount) %>
+                    $<%= format_price(promotion.discount_amount) %> off
+                  <% elsif promotion.is_a?(PercentageDiscount) %>
+                    <%= promotion.discount_percentage %>% off
+                  <% elsif promotion.is_a?(BuyXGetY) %>
+                    Buy <%= promotion.buy_quantity %> Get <%= promotion.get_quantity %> (<%= promotion.get_discount_percentage %>% off)
+                  <% elsif promotion.is_a?(WeightThreshold) %>
+                    <%= promotion.discount_percentage %>% off when buying <%= promotion.threshold_weight %>kg+
+                  <% end %>
+                </td>
+                <td>
+                  <%= promotion.target_type %>:
+                  <%
+                    target_names = promotion.target_ids.map do |target_id|
+                      if promotion.target_type == :item
+                        item = @items.find { |i| i.id == target_id }
+                        item ? item.name : "ID #{target_id}"
+                      elsif promotion.target_type == :category
+                        category = @categories.find { |c| c.id == target_id }
+                        category ? category.name : "ID #{target_id}"
+                      end
+                    end
+                  %>
+                  <%= target_names.join(', ') %>
+                </td>
+                <td><%= format_time(promotion.start_time) %></td>
+                <td><%= promotion.end_time ? format_time(promotion.end_time) : 'No end' %></td>
+                <td>
+                  <form action="/promotions/<%= promotion.id %>" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn-danger btn-small" onclick="return confirm('Are you sure?')">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+

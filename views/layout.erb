@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promotion Engine</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation Header -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <h1>Promotion Engine</h1>
+      </div>
+
+      <div class="nav-links">
+        <a href="/admin" class="nav-link nav-link-primary">
+          <i class="fas fa-cog"></i>
+          <span>Admin Dashboard</span>
+        </a>
+        <a href="/shop" class="nav-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Shop</span>
+        </a>
+      </div>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/admin" class="mobile-nav-link">
+        <i class="fas fa-cog"></i>Admin Dashboard
+      </a>
+      <a href="/shop" class="mobile-nav-link">
+        <i class="fas fa-shopping-cart"></i>Shop
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <%= yield %>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
+

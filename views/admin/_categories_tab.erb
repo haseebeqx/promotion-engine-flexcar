@@ -1,0 +1,44 @@
+<div id="categories-tab" class="tab-content active">
+  <div class="admin-section">
+    <div class="form-card">
+      <h4>Add New Category</h4>
+      <form action="/categories" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cat_id">Category ID:</label>
+            <input type="number" id="cat_id" name="id" required>
+          </div>
+          <div class="form-group">
+            <label for="cat_name">Category Name:</label>
+            <input type="text" id="cat_name" name="name" required>
+          </div>
+          <div class="form-group">
+            <button type="submit">Create Category</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="data-table">
+      <h4>Existing Categories</h4>
+      <% if @categories.empty? %>
+        <div class="empty-state">No categories yet. Create one above!</div>
+      <% else %>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th></tr>
+          </thead>
+          <tbody>
+            <% @categories.each do |category| %>
+              <tr>
+                <td><%= category.id %></td>
+                <td><%= category.name %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+

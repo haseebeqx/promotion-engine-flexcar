@@ -1,0 +1,44 @@
+<div id="brands-tab" class="tab-content">
+  <div class="admin-section">
+    <div class="form-card">
+      <h4>Add New Brand</h4>
+      <form action="/brands" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="brand_id">Brand ID:</label>
+            <input type="number" id="brand_id" name="id" required>
+          </div>
+          <div class="form-group">
+            <label for="brand_name">Brand Name:</label>
+            <input type="text" id="brand_name" name="name" required>
+          </div>
+          <div class="form-group">
+            <button type="submit">Create Brand</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="data-table">
+      <h4>Existing Brands</h4>
+      <% if @brands.empty? %>
+        <div class="empty-state">No brands yet. Create one above!</div>
+      <% else %>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th></tr>
+          </thead>
+          <tbody>
+            <% @brands.each do |brand| %>
+              <tr>
+                <td><%= brand.id %></td>
+                <td><%= brand.name %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+
